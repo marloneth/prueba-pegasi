@@ -1,0 +1,59 @@
+<div class="agendamientos-wrapper">
+  <h1>Buscador de Agendamientos</h1>
+  <p>
+    Porfavor llena el siguiente formulario para hacer la busqueda de
+    agendamientos
+  </p>
+
+  <form [formGroup]="searchingForm" (ngSubmit)="searchAppointments()">
+    <app-form-field
+      *ngFor="let field of formFields"
+      [id]="field.id"
+      [label]="field.label"
+      [control]="field.control"
+      [type]="field.type"
+    ></app-form-field>
+    <div class="button-wrapper">
+      <button
+        type="submit"
+        mat-raised-button
+        routerLink="/agendamientos"
+        color="primary"
+      >
+        <mat-icon>search</mat-icon>
+        Buscar
+      </button>
+    </div>
+  </form>
+
+  <hr />
+
+  <mat-spinner
+    *ngIf="requestSent && !dataSource.length"
+    class="loading-spinner"
+  ></mat-spinner>
+  <table
+    *ngIf="requestSent && dataSource.length"
+    mat-table
+    [dataSource]="dataSource"
+    class="mat-elevation-z8"
+  >
+    <ng-container matColumnDef="appointmentDate">
+      <th mat-header-cell *matHeaderCellDef>Fecha de agendamiento</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.appointmentDate | date : 'dd/MM/YYYY' }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="patientFullName">
+      <th mat-header-cell *matHeaderCellDef>Nombre del Paciente</th>
+      <td mat-cell *matCellDef="let element">{{ element.patientFullName }}</td>
+    </ng-container>
+    <ng-container matColumnDef="patientAge">
+      <th mat-header-cell *matHeaderCellDef>Edad del paciente</th>
+      <td mat-cell *matCellDef="let element">{{ element.patientAge }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>
