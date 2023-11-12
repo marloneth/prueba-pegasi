@@ -1,37 +1,37 @@
 const mongoose = require('mongoose')
 const { email, isoDate } = require('../utils/regex')
 
-const appointmentDataSchema = new mongoose.Schema({
-  name: {
+const patientDataSchema = new mongoose.Schema({
+  nombre: {
     type: String,
     required: true,
     minLength: 1,
   },
-  identifier: {
+  dni: {
     type: String,
     required: true,
     minLength: 1,
   },
-  birthDate: {
+  fechaNacimiento: {
     type: String,
     required: true,
-    match: [isoDate, 'birthDate is not valid'],
+    match: [isoDate, 'fechaNacimiento is not valid'],
   },
-  deceasedBirth: {
+  fechaFachecimiento: {
     type: String,
-    match: [isoDate, 'deceasedBirth is not valid'],
+    match: [isoDate, 'fechaFachecimiento is not valid'],
   },
-  birthCity: {
+  cidudadNacimiento: {
     type: String,
     required: true,
     minLength: 1,
   },
-  isDeceased: {
+  fallecido: {
     type: Boolean,
     required: true,
     default: false,
   },
-  address: {
+  direccion: {
     type: String,
     required: true,
     minLength: 1,
@@ -42,23 +42,39 @@ const appointmentDataSchema = new mongoose.Schema({
     minLength: 1,
     match: [email, 'email is not valid'],
   },
-  married: {
+  casado: {
     type: Boolean,
     required: true,
     default: false,
+  },
+})
+
+const appointmentDataSchema = new mongoose.Schema({
+  paciente: {
+    type: patientDataSchema,
+    required: true,
   },
   integration: {
     type: Boolean,
     required: true,
     default: false,
   },
-  createdAt: {
+  fechaRegistro: {
     type: Date,
     required: true,
     default: Date.now,
   },
-  updateAt: {
-    type: Date,
+  fechaInicio: {
+    type: Number,
+    required: true,
+    min: 0,
+    max: 1439,
+  },
+  fechaFinal: {
+    type: Number,
+    required: true,
+    min: 0,
+    max: 1439,
   },
 })
 

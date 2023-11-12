@@ -22,7 +22,7 @@ function generateAppointmentData() {
       birthDate.startsWith('19') &&
       faker.datatype.boolean({ probability: 0.5 }),
     integration: faker.datatype.boolean({ probability: 0.4 }),
-    createdAt: faker.date.past(),
+    createdAt: faker.date.past({ years: 3 }),
     updateAt: faker.datatype.boolean({ probability: 0.2 })
       ? faker.date.past()
       : null,

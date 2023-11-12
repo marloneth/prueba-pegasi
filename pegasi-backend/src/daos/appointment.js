@@ -11,18 +11,18 @@ async function getAppointmentsDao(filters) {
     const appointments = await Appointment.aggregate([
       {
         $addFields: {
-          birthDate_date: {
-            $toDate: '$birthDate',
+          fechaNacimiento_date: {
+            $toDate: '$paciente.fechaNacimiento',
           },
         },
       },
     ])
       .match(filters)
       .sort({
-        createdAt: -1,
+        fechaRegistro: -1,
       })
       .project({
-        birthDate_date: 0,
+        fechaNacimiento_date: 0,
       })
 
     return appointments

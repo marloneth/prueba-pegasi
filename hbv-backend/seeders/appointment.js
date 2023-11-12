@@ -18,7 +18,7 @@ function generateAppointmentData() {
     ciudad_nacido: fakerES.location.city(),
     direccion_actual: fakerES.location.streetAddress(),
     correoActual: fakerES.internet.email(),
-    a_t: fakerES.date.past(),
+    a_t: fakerES.date.past({ years: 2 }),
     UT: fakerES.date.past(),
   }
 }
