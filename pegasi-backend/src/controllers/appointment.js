@@ -10,13 +10,20 @@ const logger = createLogger('controllers/appointment.js')
 async function getAppointmentsController(req, res) {
   try {
     logger.info('Getting appointments controller')
-    const filters = req.query
+    const params = req.query
     const hoursOffset = parseInt(req.headers['x-hours-offset'] ?? '0')
-    const { error } = getAppointmentsQuerySchema.validate(filters)
+    const { error } = getAppointmentsQuerySchema.validate(params)
+    const externalResource = params.externalResource ?? 'ST'
+    const filters = { ...params }
+    delete filters.externalResource
 
     if (error) throw new createError.BadRequest(error.message)
 
-    const appointments = await getAppointmentsService(filters, hoursOffset)
+    const appointments = await getAppointmentsService(
+      filters,
+      hoursOffset,
+      externalResource
+    )
 
     return res.status(200).json({
       status: 'success',

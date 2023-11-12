@@ -40,6 +40,18 @@ async function getAppointmentsDao(filters, today) {
   }
 }
 
+async function createAppointmentsDao(appointmentsData) {
+  try {
+    logger.info('Creating new appointments dao')
+    const appointments = await Appointment.create(appointmentsData)
+    return appointments
+  } catch (error) {
+    logger.error('Database error: ', error)
+    throw new createError.InternalServerError('Database Error')
+  }
+}
+
 module.exports = {
   getAppointmentsDao,
+  createAppointmentsDao,
 }

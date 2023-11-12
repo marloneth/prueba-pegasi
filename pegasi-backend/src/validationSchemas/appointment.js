@@ -12,6 +12,7 @@ const getAppointmentsQuerySchema = Joi.object().keys({
     .regex(date)
     .message("given date should have this format: 'YYYY-MM-DD'")
     .label('date'),
+  externalResource: Joi.string().valid('ST', 'HBV').label('externalResource'),
 })
 
 module.exports = {

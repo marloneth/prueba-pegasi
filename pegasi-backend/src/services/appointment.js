@@ -1,14 +1,18 @@
 const createError = require('http-errors')
+const moment = require('moment')
 const { createLogger } = require('../config/logger')
 const { getAppointmentsDao } = require('../daos/appointment')
 const { diacriticSensitiveRegex } = require('../utils/regex')
+const { getHBVAppointmentsAndSave } = require('./hbvAppointmentAdapter')
+const { getSTAppointmentsAndSave } = require('./stAppointmentAdapter')
 
 const logger = createLogger('services/appointment.js')
 
-async function getAppointmentsService(filters, hoursOffset) {
+async function getAppointmentsService(filters, hoursOffset, externalResource) {
   try {
     logger.info('Getting appointments service')
 
+    let localAppointments
     let appointments
     let nameRegex
     const dbFilters = {}
@@ -62,8 +66,29 @@ async function getAppointmentsService(filters, hoursOffset) {
       }
     }
 
-    appointments = await getAppointmentsDao(dbFilters, today)
-    return appointments
+    // Looking for local appointments first
+    localAppointments = await getAppointmentsDao(dbFilters, today)
+    if (localAppointments.length) return localAppointments
+
+    // If not found, look for the external ones
+    if (externalResource === 'HBV') {
+      appointments = await getHBVAppointmentsAndSave(filters, hoursOffset)
+    } else {
+      appointments = await getSTAppointmentsAndSave(filters, hoursOffset)
+    }
+
+    // Formatting the created appointments to match the FE structure
+    const formattedAppointments = appointments.map((appointment) => ({
+      _id: appointment._id,
+      patientName: appointment.paciente.nombre,
+      patientAge: moment(today).diff(
+        appointment.paciente.fechaNacimiento,
+        'years'
+      ),
+      appointmentDate: appointment.fechaRegistro,
+    }))
+
+    return formattedAppointments
   } catch (error) {
     const { status } = error
 
