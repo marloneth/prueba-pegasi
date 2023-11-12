@@ -11,11 +11,12 @@ async function getAppointmentsController(req, res) {
   try {
     logger.info('Getting appointments controller')
     const filters = req.query
+    const hoursOffset = parseInt(req.headers['x-hours-offset'] ?? '0')
     const { error } = getAppointmentsQuerySchema.validate(filters)
 
     if (error) throw new createError.BadRequest(error.message)
 
-    const appointments = await getAppointmentsService(filters)
+    const appointments = await getAppointmentsService(filters, hoursOffset)
 
     return res.status(200).json({
       status: 'success',

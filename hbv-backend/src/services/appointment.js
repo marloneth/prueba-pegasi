@@ -5,7 +5,7 @@ const { diacriticSensitiveRegex } = require('../utils/regex')
 
 const logger = createLogger('services/appointment.js')
 
-async function getAppointmentsService(filters) {
+async function getAppointmentsService(filters, hoursOffset) {
   try {
     logger.info('Getting appointments service')
 
@@ -45,10 +45,14 @@ async function getAppointmentsService(filters) {
     // Adding filter for patient age
     if (age) {
       const patientAge = parseInt(age)
+      const utcToday = new Date()
       const today = new Date()
+      today.setHours(utcToday.getHours() + hoursOffset)
+
       const toDate = new Date()
       toDate.setFullYear(today.getFullYear() - patientAge)
       toDate.setDate(today.getDate() + 1)
+
       const fromDate = new Date()
       fromDate.setFullYear(today.getFullYear() - patientAge - 1)
       fromDate.setDate(today.getDate() + 1)
