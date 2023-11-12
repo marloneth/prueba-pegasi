@@ -13,6 +13,9 @@ async function getAppointmentsService(filters, hoursOffset) {
     let nameRegex
     const dbFilters = {}
     const { firstName, lastName, age, date } = filters
+    const utcToday = new Date()
+    const today = new Date()
+    today.setHours(utcToday.getHours() + hoursOffset)
 
     // Adding filter for appointment date
     if (date) {
@@ -45,10 +48,6 @@ async function getAppointmentsService(filters, hoursOffset) {
     // Adding filter for patient age
     if (age) {
       const patientAge = parseInt(age)
-      const utcToday = new Date()
-      const today = new Date()
-      today.setHours(utcToday.getHours() + hoursOffset)
-
       const toDate = new Date()
       toDate.setFullYear(today.getFullYear() - patientAge)
       toDate.setDate(today.getDate() + 1)
@@ -63,7 +62,7 @@ async function getAppointmentsService(filters, hoursOffset) {
       }
     }
 
-    appointments = await getAppointmentsDao(dbFilters)
+    appointments = await getAppointmentsDao(dbFilters, today)
     return appointments
   } catch (error) {
     const { status } = error
