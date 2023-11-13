@@ -78,9 +78,7 @@ export class AgendamientosViewComponent implements OnInit {
       error: (e) => {
         const errorReceived = e.error.message
 
-        if (errorReceived === 'given age is not logic for a human') {
-          this.errorMessage = 'Edad del paciente no es valida'
-        } else if (e.status === 500) {
+        if (e.status === 500) {
           this.errorMessage = 'Algo salio mal. Intente mas tarde'
         } else {
           this.errorMessage = errorReceived
