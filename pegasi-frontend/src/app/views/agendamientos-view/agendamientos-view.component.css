@@ -1,0 +1,57 @@
+.agendamientos-wrapper {
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.agendamientos-wrapper h1 {
+  font-size: xx-large;
+  font-weight: 500;
+}
+
+.agendamientos-wrapper p {
+  font-size: medium;
+  font-weight: 400;
+}
+
+.agendamientos-wrapper form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10px;
+  row-gap: 10px;
+  font-size: medium;
+  margin-top: 30px;
+}
+
+.button-wrapper {
+  grid-column: 1 / 3;
+}
+
+.button-wrapper button {
+  width: 50%;
+  height: 40px;
+  margin-bottom: 30px;
+  font-size: medium;
+}
+
+.agendamientos-wrapper table {
+  margin-top: 20px;
+  width: 100%;
+}
+
+.agendamientos-wrapper th {
+  border-radius: 10px;
+  text-align: center;
+  font-size: medium;
+}
+
+.loading-spinner {
+  margin: 20px auto;
+}
+
+.no-results {
+  margin-top: 40px;
+}
+
+.error {
+  color: #ff2a51;
+}
