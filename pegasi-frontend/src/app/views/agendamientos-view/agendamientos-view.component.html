@@ -28,12 +28,9 @@
 
   <hr />
 
-  <mat-spinner
-    *ngIf="requestSent && !dataSource.length"
-    class="loading-spinner"
-  ></mat-spinner>
+  <mat-spinner *ngIf="requestSent" class="loading-spinner"></mat-spinner>
   <table
-    *ngIf="requestSent && dataSource.length"
+    *ngIf="responseDone && dataSource.length"
     mat-table
     [dataSource]="dataSource"
     class="mat-elevation-z8"
@@ -44,9 +41,9 @@
         {{ element.appointmentDate | date : 'dd/MM/YYYY' }}
       </td>
     </ng-container>
-    <ng-container matColumnDef="patientFullName">
+    <ng-container matColumnDef="patientName">
       <th mat-header-cell *matHeaderCellDef>Nombre del Paciente</th>
-      <td mat-cell *matCellDef="let element">{{ element.patientFullName }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.patientName }}</td>
     </ng-container>
     <ng-container matColumnDef="patientAge">
       <th mat-header-cell *matHeaderCellDef>Edad del paciente</th>
@@ -56,4 +53,11 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
+  <p
+    *ngIf="responseDone && !dataSource.length"
+    class="no-results"
+    [ngClass]="{ error: errorMessage }"
+  >
+    {{ errorMessage || 'No se encontraron resultados' }}
+  </p>
 </div>

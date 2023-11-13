@@ -1,5 +1,6 @@
 export interface PatientAppointment {
+  _id: string
   appointmentDate: string
-  patientFullName: string
+  patientName: string
   patientAge: number
 }

@@ -15,6 +15,8 @@ import { MatInputModule } from '@angular/material/input'
 import { FormFieldComponent } from './components/form-field/form-field.component'
 import { MatTableModule } from '@angular/material/table'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+import { HttpClientModule } from '@angular/common/http'
+import { MatCardModule } from '@angular/material/card'
 
 @NgModule({
   declarations: [
@@ -35,6 +37,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
     MatInputModule,
     MatTableModule,
     MatProgressSpinnerModule,
+    HttpClientModule,
+    MatCardModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

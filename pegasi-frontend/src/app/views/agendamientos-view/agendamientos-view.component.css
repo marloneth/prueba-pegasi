@@ -47,3 +47,11 @@
 .loading-spinner {
   margin: 20px auto;
 }
+
+.no-results {
+  margin-top: 40px;
+}
+
+.error {
+  color: #ff2a51;
+}
