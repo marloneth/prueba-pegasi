@@ -63,7 +63,9 @@ async function createAppointmentsFromSTData(stAppointments) {
 
 async function getSTAppointmentsAndSave(filters, hoursOffset) {
   const stAppointments = await getSTAppointments(filters, hoursOffset)
-  const appointments = createAppointmentsFromSTData(stAppointments)
+  if (!stAppointments.length) return []
+
+  const appointments = await createAppointmentsFromSTData(stAppointments)
   return appointments
 }
 

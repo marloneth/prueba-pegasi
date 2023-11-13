@@ -5,6 +5,8 @@ const { getAppointmentsDao } = require('../daos/appointment')
 const { diacriticSensitiveRegex } = require('../utils/regex')
 const { getHBVAppointmentsAndSave } = require('./hbvAppointmentAdapter')
 const { getSTAppointmentsAndSave } = require('./stAppointmentAdapter')
+const { formatAppointmentsData } = require('../utils/dataFormat')
+const { getDatePart } = require('../utils/date')
 
 const logger = createLogger('services/appointment.js')
 
@@ -17,18 +19,16 @@ async function getAppointmentsService(filters, hoursOffset, externalResource) {
     let nameRegex
     const dbFilters = {}
     const { firstName, lastName, age, date } = filters
-    const utcToday = new Date()
-    const today = new Date()
-    today.setHours(utcToday.getHours() + hoursOffset)
+    const today = moment.utc().add(hoursOffset, 'hours').toDate()
+    const todayDateString = getDatePart(today)
 
     // Adding filter for appointment date
     if (date) {
-      const appointmentDay = new Date(date).getDate()
-      const nextDate = new Date(date)
-      nextDate.setDate(appointmentDay + 1)
+      const appointmentDate = moment.utc(date).toDate()
+      const nextDate = moment.utc(date).add(1, 'day').toDate()
 
       dbFilters.fechaRegistro = {
-        $gte: new Date(date),
+        $gte: appointmentDate,
         $lt: nextDate,
       }
     }
@@ -52,23 +52,29 @@ async function getAppointmentsService(filters, hoursOffset, externalResource) {
     // Adding filter for patient age
     if (age) {
       const patientAge = parseInt(age)
-      const toDate = new Date()
-      toDate.setFullYear(today.getFullYear() - patientAge)
-      toDate.setDate(today.getDate() + 1)
+      const toDate = moment
+        .utc(todayDateString)
+        .add(1, 'day')
+        .subtract(patientAge, 'years')
+        .toDate()
 
-      const fromDate = new Date()
-      fromDate.setFullYear(today.getFullYear() - patientAge - 1)
-      fromDate.setDate(today.getDate() + 1)
+      const fromDate = moment
+        .utc(todayDateString)
+        .add(1, 'day')
+        .subtract(patientAge + 1, 'years')
+        .toDate()
 
       dbFilters.fechaNacimiento_date = {
-        $gte: new Date(fromDate.toDateString()),
-        $lt: new Date(toDate.toDateString()),
+        $gte: fromDate,
+        $lt: toDate,
       }
     }
 
     // Looking for local appointments first
     localAppointments = await getAppointmentsDao(dbFilters, today)
-    if (localAppointments.length) return localAppointments
+    if (localAppointments.length) {
+      return formatAppointmentsData(localAppointments, todayDateString)
+    }
 
     // If not found, look for the external ones
     if (externalResource === 'HBV') {
@@ -77,18 +83,7 @@ async function getAppointmentsService(filters, hoursOffset, externalResource) {
       appointments = await getSTAppointmentsAndSave(filters, hoursOffset)
     }
 
-    // Formatting the created appointments to match the FE structure
-    const formattedAppointments = appointments.map((appointment) => ({
-      _id: appointment._id,
-      patientName: appointment.paciente.nombre,
-      patientAge: moment(today).diff(
-        appointment.paciente.fechaNacimiento,
-        'years'
-      ),
-      appointmentDate: appointment.fechaRegistro,
-    }))
-
-    return formattedAppointments
+    return formatAppointmentsData(appointments, todayDateString)
   } catch (error) {
     const { status } = error
 

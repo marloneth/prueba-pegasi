@@ -5,6 +5,11 @@ function getMinuteOfTheDay(date) {
   return hours * 60 + minutes
 }
 
+function getDatePart(date) {
+  return date.toISOString().split('T')[0]
+}
+
 module.exports = {
   getMinuteOfTheDay,
+  getDatePart,
 }

@@ -5,7 +5,7 @@ const Appointment = require('../models/appointment')
 
 const logger = createLogger('daos/appointment.js')
 
-async function getAppointmentsDao(filters, today) {
+async function getAppointmentsDao(filters) {
   try {
     logger.info('Getting appointments')
     const appointments = await Appointment.aggregate([
@@ -20,17 +20,6 @@ async function getAppointmentsDao(filters, today) {
       .match(filters)
       .sort({
         fechaRegistro: -1,
-      })
-      .project({
-        patientName: '$paciente.nombre',
-        patientAge: {
-          $dateDiff: {
-            startDate: '$fechaNacimiento_date',
-            endDate: today,
-            unit: 'year',
-          },
-        },
-        appointmentDate: '$fechaRegistro',
       })
 
     return appointments

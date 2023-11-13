@@ -63,7 +63,9 @@ async function createAppointmentsFromHBVData(hbvAppointments) {
 
 async function getHBVAppointmentsAndSave(filters, hoursOffset) {
   const hbvAppointments = await getHBVAppointments(filters, hoursOffset)
-  const appointments = createAppointmentsFromHBVData(hbvAppointments)
+  if (!hbvAppointments.length) return []
+
+  const appointments = await createAppointmentsFromHBVData(hbvAppointments)
   return appointments
 }
 
