@@ -2,6 +2,7 @@ const date = /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/
 const isoDate = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d+)?(([+-]\d\d:\d\d)|Z)?$/i
 const email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 const age = /^(\d|[1-9]\d|1\d{2}|200)$/
+const personName = /[\p{Letter}\p{Mark}\s-]+/u
 
 function diacriticSensitiveRegex(string = '') {
   return string
@@ -23,4 +24,5 @@ module.exports = {
   age,
   isoDate,
   diacriticSensitiveRegex,
+  personName,
 }
